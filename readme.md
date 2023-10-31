@@ -1,7 +1,5 @@
 # Match System for Thrift Learning
 
-![Match System](https://github.com/xxdecade/Match_System/raw/master/img/match_system.png)
-
 在这个系统中，有三个节点（功能），它们是完全独立的，可以在同一个服务器上，也可以在不同的服务器上运行。每个节点就是一个进程，可以使用不同的编程语言来实现。
 
 客户端可以通过调用匹配系统的服务接口函数来获取功能，实现跨语言、跨服务的工作。每个节点（功能）之间通过Thrift定义的服务接口进行连接，弧尾所在的节点创建客户端，弧头所在的节点创建服务器。
@@ -13,6 +11,8 @@
 - `add_user`: 向匹配池中添加玩家。
 - `remove_user`: 从匹配池中删除玩家。
 - `save_data`: 将匹配信息存储起来。
+
+![Match System](https://github.com/xxdecade/Match_System/raw/master/img/match_system.png)
 
 ****
 In this system, there are three nodes (functions), which are completely independent and can run on the same server or on different servers. Each node is a process and can be implemented using different programming languages.
