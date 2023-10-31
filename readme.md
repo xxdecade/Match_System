@@ -28,7 +28,7 @@ The data storage node implements the server side, including service interface fu
 - `save_data`: Store matching information.
 
 ****
-#### `version--1.0:` 每2个用户进入，就将他们匹配在一起。
-#### `version--2.0:` 按用户的分数排序，差距小于50的匹配在一起。
-#### `version--3.0:` 实现了生产者的多线程。
-#### `version--4.0:` 在2.0的基础上，剩余用户的匹配范围会按照每秒扩展+50的速度扩展进行匹配。
+`version--1.0:` 每2个用户进入，就将他们匹配在一起。
+`version--2.0:` 按用户的分数排序，差距小于50的匹配在一起。
+`version--3.0:` 实现了生产者的多线程。
+`version--4.0:` 在2.0的基础上，剩余用户的匹配范围会按照每秒扩展+50的速度扩展进行匹配。
