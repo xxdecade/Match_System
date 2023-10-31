@@ -1,2 +1,16 @@
-#### Match_System for thrift learning
-![Image text](https://github.com/xxdecade/Match_System/blob/master/img/match_system.png)
+# Match System for Thrift Learning
+
+![Match System](https://github.com/xxdecade/Match_System/raw/master/img/match_system.png)
+
+在这个游戏中，有三个节点（功能），它们是完全独立的，可以在同一个服务器上，也可以在不同的服务器上运行。每个节点就是一个进程，可以使用不同的编程语言来实现。
+
+客户端可以通过调用匹配系统的服务接口函数来获取功能，实现跨语言、跨服务的工作。每个节点（功能）之间通过Thrift定义的服务接口进行连接，弧尾所在的节点创建客户端，弧头所在的节点创建服务器。
+
+匹配系统节点实现服务端，包括一个匹配池，它不断接收玩家并删除玩家，同时根据一定规则为每个玩家安排一局游戏。匹配系统节点也实现客户端，通过调用数据存储节点的服务端来获取功能，实现跨语言、跨服务的工作。
+
+数据存储节点实现服务端，其中包括服务接口功能：
+
+- `add_user`: 向匹配池中添加玩家。
+- `remove_user`: 从匹配池中删除玩家。
+- `save_data`: 将匹配信息存储起来。
+
