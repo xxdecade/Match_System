@@ -16,6 +16,7 @@
 #include <condition_variable>
 #include <queue>
 #include <vector>
+#include <unistd.h>
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -61,15 +62,30 @@ class Pool
             }
         }
 
-        void match()//只匹配前两个user
+        void match()//每一秒钟匹配一次
         {
             while (users.size() > 1)
             {
-                auto a = users[0], b = users[1];
-                users.erase(users.begin());
-                users.erase(users.begin());
+                sort(users.begin(), users.end(), [&](User& a, User& b){
+                    return a.score < b.score;
+                        });
 
-                save_result(a.id, b.id);
+                bool flag = true;
+                for (uint32_t i = 1; i < users.size(); i ++)
+                {
+                    auto a = users[i - 1], b = users[i];
+                    if (b.score - a.score <= 50)//两名玩家分值在50以内就匹配上
+                    {
+                        users.erase(users.begin() + i - 1, users.begin() + i + 1);//左闭右开区间
+                        save_result(a.id, b.id);
+
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag)
+                    break;
             }
         }
 
@@ -129,7 +145,9 @@ void consume_task()//消费者
         unique_lock<mutex> lck(message_queue.m);
         if (message_queue.q.empty())
         {
-            message_queue.cv.wait(lck);//阻塞住，直到add或remove把条件变量唤醒
+            lck.unlock();
+            pool.match();
+            sleep(1);
         }
         else
         {
@@ -141,8 +159,6 @@ void consume_task()//消费者
                 pool.add(task.user);
             else if (task.type == "remove")
                 pool.remove(task.user);
-
-            pool.match();
         }
     }
 }
