@@ -66,26 +66,43 @@ class Pool
             }
         }
 
+        bool check_match(uint32_t i, uint32_t j)
+        {
+            auto a = users[i], b = users[j];
+
+            int dt = abs(a.score - b.score);
+            int a_maxdif = wait[i] * 50;
+            int b_maxdif = wait[j] * 50;
+
+            return dt <= a_maxdif && dt <= b_maxdif;
+        }
+
         void match()//每一秒钟匹配一次
         {
+            for (uint32_t i = 0; i < wait.size(); i ++)
+                wait[i] ++;//等待秒数+1
             while (users.size() > 1)
             {
-                sort(users.begin(), users.end(), [&](User& a, User& b){
-                        return a.score < b.score;
-                        });
-
                 bool flag = true;
-                for (uint32_t i = 1; i < users.size(); i ++)
+                for (uint32_t i = 0; i < users.size(); i ++)
                 {
-                    auto a = users[i - 1], b = users[i];
-                    if (b.score - a.score <= 50)//两名玩家分值在50以内就匹配上
+                    for (uint32_t j = i + 1; j < users.size(); j ++)
                     {
-                        users.erase(users.begin() + i - 1, users.begin() + i + 1);//左闭右开区间
-                        save_result(a.id, b.id);
-
-                        flag = false;
-                        break;
+                        if (check_match(i, j))
+                        {
+                            auto a = users[i], b = users[j];
+                            users.erase(users.begin() + j);
+                            users.erase(users.begin() + i);
+                            wait.erase(wait.begin() + j);
+                            wait.erase(wait.begin() + i);
+                            save_result(a.id, b.id);
+                            flag = false;
+                            break;
+                        }
                     }
+
+                    if (!flag)
+                        break;
                 }
 
                 if (flag)
@@ -96,6 +113,7 @@ class Pool
         void add(User user)
         {
             users.push_back(user);
+            wait.push_back(0);//每个用户的初始等待时间为0
         }
 
         void remove(User user)
@@ -104,12 +122,14 @@ class Pool
                 if (users[i].id == user.id)
                 {
                     users.erase(users.begin() + i);
+                    wait.erase(wait.begin() + i);
                     break;
                 }
         }
 
     private:
         vector<User> users;
+        vector<int> wait;//等待时间，单位：s
 }pool;
 
 class MatchHandler : virtual public MatchIf {
