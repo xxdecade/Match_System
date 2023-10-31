@@ -12,6 +12,8 @@
 - `remove_user`: 从匹配池中删除玩家。
 - `save_data`: 将匹配信息存储起来。
 
+![Match System](https://github.com/xxdecade/Match_System/raw/master/img/img0.png)
+
 ****
 In this system, there are three nodes (functions), which are completely independent and can run on the same server or on different servers. Each node is a process and can be implemented using different programming languages.
 
